@@ -21,7 +21,7 @@
     <div class="container">
       <div>
         <h1>Glossary</h1>
-        <p>Add or update acronym definitions <a href="https://docs.google.com/spreadsheets/d/1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94/edit" target="_blank">here</a>.</p>
+        <p>Add or update term definitions <a href="https://docs.google.com/spreadsheets/d/1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94/edit" target="_blank">here</a>.</p>
         <div class="table-container"></div>
       </div>
     </div><!-- /.container -->
@@ -45,7 +45,7 @@
               success: function(data) {
                 resolve(_.map(data.feed.entry, function(row) {
                   return {
-                    acronym: row.title.$t,
+                    term: row.title.$t,
                     description: row.content.$t.substr('description: '.length)
                   };
                 }));
@@ -59,7 +59,7 @@
           var $table = $('<table>')
             .append($('<thead>')
               .append($('<tr>')
-                .append($('<th>').text('Acronym'))
+                .append($('<th>').text('Term'))
                 .append($('<th>').text('Description'))))
             .append($('<tbody>')
               .append(_.map(rows, renderRow)));
@@ -68,7 +68,7 @@
 
         function renderRow (row) {
           return $('<tr>')
-            .append($('<td>').text(row.acronym))
+            .append($('<td>').text(row.term))
             .append($('<td>').text(row.description));
         }
 
