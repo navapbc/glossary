@@ -1,0 +1,53 @@
+<html>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/>
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/dt-1.10.11/datatables.min.css"/> -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.1/lodash.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+  
+  <!-- <script type="text/javascript" src="https://cdn.datatables.net/t/bs/dt-1.10.11/datatables.min.js"></script> -->
+  <script type="text/javascript">
+    (function() {
+      var sheetId = '1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94';
+      var url = 'https://spreadsheets.google.com/feeds/list/' + sheetId + '/1/public/basic?alt=json';
+
+      $(document).ready(function(){
+    
+        $.ajax({
+          url: url,
+          type: 'GET',
+          success: function(data) {
+            var $table = $('<table>');
+            $table.append(
+              $('<thead>').append(
+                $('<tr>')
+                  .append($('<th>').text('acronym'))
+                  .append($('<th>').text('description'))
+              )
+            );
+            var $tbody = $('<tbody>');
+            $tbody.appendTo($table);
+            _.each(data.feed.entry, function(row) {
+              $('<tr>')
+                .append($('<td>').text(row.title.$t))
+                .append($('<td>').text(row.content.$t))
+                .appendTo($tbody);
+            })
+            $('#container').html($table);
+            $table.DataTable({
+              lengthMenu: [[100, 50, -1], [100, 50, 'All']]
+            });
+            // $('#json').text(JSON.stringify(data.feed.entry, null, '  '));
+          }
+        });
+      });
+    })();
+  </script>
+  <body>
+    <div id="container"></div>
+    <pre id="json">
+    </pre>
+  </body>
+</html>
