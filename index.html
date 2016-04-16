@@ -14,13 +14,13 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
 
-    <title>Nava Tools</title>
+    <title>Glossary</title>
   </head>
 
   <body>
     <div class="container">
       <div>
-        <h1>Acronym Finder</h1>
+        <h1>Glossary</h1>
         <p>Add or update acronym definitions <a href="https://docs.google.com/spreadsheets/d/1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94/edit" target="_blank">here</a>.</p>
         <div class="table-container"></div>
       </div>
@@ -46,7 +46,7 @@
                 resolve(_.map(data.feed.entry, function(row) {
                   return {
                     acronym: row.title.$t,
-                    description: row.content.$t
+                    description: row.content.$t.substr('description: '.length)
                   };
                 }));
               },
