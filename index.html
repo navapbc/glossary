@@ -1,70 +1,88 @@
-<html>
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/>
-  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/dt-1.10.11/datatables.min.css"/> -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.1/lodash.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-  
-  <!-- <script type="text/javascript" src="https://cdn.datatables.net/t/bs/dt-1.10.11/datatables.min.js"></script> -->
-  <script type="text/javascript">
-    (function() {
-      var sheetId = '1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94';
-      var url = 'https://spreadsheets.google.com/feeds/list/' + sheetId + '/1/public/basic?alt=json';
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-      function getData() {
-        return new Promise(function(resolve, reject) {
-          $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(data) {
-              resolve(_.map(data.feed.entry, function(row) {
-                return {
-                  acronym: row.title.$t,
-                  description: row.content.$t
-                };
-              }));
-            },
-            error: reject
-          });
-        });
-      }
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-      function createTable(rows) {
-        var $table = $('<table>');
-        $table.append(
-          $('<thead>').append(
-            $('<tr>')
-              .append($('<th>').text('acronym'))
-              .append($('<th>').text('description'))
-          )
-        );
-        var $tbody = $('<tbody>');
-        $tbody.appendTo($table);
-        _.each(rows, function(row) {
-          $('<tr>')
-            .append($('<td>').text(row.acronym))
-            .append($('<td>').text(row.description))
-            .appendTo($tbody);
-        })
-        return $table;
-      }
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
 
-      $(document).ready(function(){
-        getData()
-          .then(function(data) {
-            $table = createTable(data);
-            $('#container').html($table);
-            $table.DataTable({
-              lengthMenu: [[100, 50, -1], [100, 50, 'All']]
+    <title>Nava Tools</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div>
+        <h1>Acronym Finder</h1>
+        <p>Add or update acronym definitions <a href="https://docs.google.com/spreadsheets/d/1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94/edit" target="_blank">here</a>.</p>
+        <div class="table-container"></div>
+      </div>
+    </div><!-- /.container -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+
+    <!-- <script type="text/javascript" src="https://cdn.datatables.net/t/bs/dt-1.10.11/datatables.min.js"></script> -->
+    <script type="text/javascript">
+      (function() {
+        var sheetId = '1KIAxNf7yHRTMumP9IderxbL4M0X40b4NxDbN4LU2j94';
+        var url = 'https://spreadsheets.google.com/feeds/list/' + sheetId + '/1/public/basic?alt=json';
+
+        function getData() {
+          return new Promise(function(resolve, reject) {
+            $.ajax({
+              url: url,
+              type: 'GET',
+              success: function(data) {
+                resolve(_.map(data.feed.entry, function(row) {
+                  return {
+                    acronym: row.title.$t,
+                    description: row.content.$t
+                  };
+                }));
+              },
+              error: reject
             });
           });
-      });
-    })();
-  </script>
-  <body>
-    <div id="container"></div>
+        }
+
+        function renderTable(rows) {
+          var $table = $('<table>')
+            .append($('<thead>')
+              .append($('<tr>')
+                .append($('<th>').text('Acronym'))
+                .append($('<th>').text('Description'))))
+            .append($('<tbody>')
+              .append(_.map(rows, renderRow)));
+          return $table;
+        }
+
+        function renderRow (row) {
+          return $('<tr>')
+            .append($('<td>').text(row.acronym))
+            .append($('<td>').text(row.description));
+        }
+
+        $(document).ready(function(){
+          getData()
+            .then(function(data) {
+              var $table = renderTable(data);
+              $table.appendTo($('.table-container'));
+              $table.DataTable({
+                lengthMenu: [[100, 50, -1], [100, 50, 'All']]
+              });
+            });
+        });
+      })();
+    </script>
   </body>
 </html>
