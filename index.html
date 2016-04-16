@@ -78,6 +78,10 @@
               var $table = renderTable(data);
               $table.appendTo($('.table-container'));
               $table.DataTable({
+                "columns": [
+                  null,
+                  { "searchable": false }
+                ],
                 lengthMenu: [[100, 50, -1], [100, 50, 'All']]
               });
             });
