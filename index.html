@@ -13,6 +13,11 @@
 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
+    <style type="text/css">
+      .dataTables_wrapper .dataTables_filter {
+        float: left;
+      }
+    </style>
 
     <title>Glossary</title>
   </head>
@@ -78,11 +83,12 @@
               var $table = renderTable(data);
               $table.appendTo($('.table-container'));
               $table.DataTable({
-                "columns": [
+                pageLength: 100,
+                lengthChange: false, // disables ability to change number of items per page
+                columns: [
                   null,
                   { "searchable": false }
-                ],
-                lengthMenu: [[100, 50, -1], [100, 50, 'All']]
+                ]
               });
             });
         });
