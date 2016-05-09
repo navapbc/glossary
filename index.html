@@ -68,13 +68,19 @@
                 .append($('<th>').text('Description'))))
             .append($('<tbody>')
               .append(_.map(rows, renderRow)));
+
           return $table;
         }
 
-        function renderRow (row) {
+        function renderRow(row) {
           return $('<tr>')
             .append($('<td>').text(row.term))
             .append($('<td>').text(row.description));
+        }
+
+        function updateHash() {
+          var query = $('.table-container input').val();
+          window.location.hash = query.replace(/\s+/g, '-').toLowerCase();
         }
 
         $(document).ready(function(){
@@ -82,7 +88,8 @@
             .then(function(data) {
               var $table = renderTable(data);
               $table.appendTo($('.table-container'));
-              $table.DataTable({
+
+              var dataTable = $table.DataTable({
                 pageLength: 100,
                 lengthChange: false, // disables ability to change number of items per page
                 columns: [
@@ -90,6 +97,19 @@
                   { "searchable": false }
                 ]
               });
+
+              // queries with the current hash if there is one
+              var hash = window.location.hash.substring(1);
+              if (hash.length) {
+                // hashes are slugged '#waiting-room'
+                var query = hash.replace(/-/g, ' ');
+
+                // https://datatables.net/reference/api/search()
+                dataTable.search(query).draw();
+              }
+
+              // update the hash whenever the table is rerendered
+              $table.on('draw.dt', updateHash);
             });
         });
       })();
