@@ -98,6 +98,16 @@
                 ]
               });
 
+              // queries with the current hash if there is one
+              var hash = window.location.hash.substring(1);
+              if (hash.length) {
+                // hashes are slugged '#waiting-room'
+                var query = hash.replace(/-/g, ' ');
+
+                // https://datatables.net/reference/api/search()
+                dataTable.search(query).draw();
+              }
+
               // update the hash whenever the table is rerendered
               $table.on('draw.dt', updateHash);
             });
